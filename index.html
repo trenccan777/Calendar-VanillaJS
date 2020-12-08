@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      .c-table {
+        border: 1px solid #ccc;
+        max-width: 700px;
+        margin: 0 auto;
+        overflow: hidden;
+      }
+
+      .c-week {
+        display: flex;
+        border-bottom: 1px solid #ccc;
+      }
+
+      .c-table > div:last-child {
+        border-bottom: none;
+      }
+
+      .c-week > div:last-child {
+        border-right: none;
+      }
+
+      .c-cell {
+        flex: 1;
+        border-right: 1px solid #ccc;
+        position: relative;
+        min-width: 70px;
+      }
+
+      .c-day-name {
+        font-weight: 700;
+      }
+
+      .c-day {
+        min-height: 60px;
+      }
+
+      .c-day-content {
+        position: absolute;
+      }
+      
+      .c-red {
+        background-color: red;
+      }
+
+      .c-blue {
+        background-color: blue;
+      }
+    </style>
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="calendar-table" class="c-table">
+      <div class="c-week">
+        <div class="c-cell c-day-name">Pondelok</div>
+        <div class="c-cell c-day-name">Utorok</div>
+        <div class="c-cell c-day-name">Streda</div>
+        <div class="c-cell c-day-name">Štvrtok</div>
+        <div class="c-cell c-day-name">Piatok</div>
+        <div class="c-cell c-day-name">Sobota</div>
+        <div class="c-cell c-day-name">Nedeľa</div>
+      </div>
+      <div class="c-week">
+        <div class="c-cell c-day">
+          <div class="c-day-content">
+            <div id="01012020" class="c-day-event c-red">Event</div>
+            <div id="dayid" class="c-day-event">Event</div>
+          </div>
+        </div>
+        <div class="c-cell c-day"></div>
+        <div class="c-cell c-day"></div>
+        <div class="c-cell c-day"></div>
+        <div class="c-cell c-day"></div>
+        <div class="c-cell c-day"></div>
+        <div class="c-cell c-day"></div>
+      </div>
+      <div class="c-week">
+        <div class="c-cell c-day"></div>
+        <div class="c-cell c-day"></div>
+        <div class="c-cell c-day"></div>
+        <div class="c-cell c-day">
+          <div class="c-day-content">
+            <div id="01022020" class="c-day-event c-blue">Event</div>
+            <div id="dayid" class="c-day-event">Event</div>
+          </div>
+        </div>
+        <div class="c-cell c-day"></div>
+        <div class="c-cell c-day"></div>
+        <div class="c-cell c-day"></div>
+      </div><div class="c-week">
+        <div class="c-cell c-day">
+          <div class="c-day-content">
+            <div id="dayid" class="c-day-event">Event</div>
+            <div id="dayid" class="c-day-event">Event</div>
+          </div>
+        </div>
+        <div class="c-cell c-day"></div>
+        <div class="c-cell c-day"></div>
+        <div class="c-cell c-day"></div>
+        <div class="c-cell c-day"></div>
+        <div class="c-cell c-day"></div>
+        <div class="c-cell c-day"></div>
+      </div><div class="c-week">
+        <div class="c-cell c-day">
+          <div class="c-day-content">
+            <div id="dayid" class="c-day-event">Event</div>
+            <div id="dayid" class="c-day-event">Event</div>
+          </div>
+        </div>
+        <div class="c-cell c-day"></div>
+        <div class="c-cell c-day"></div>
+        <div class="c-cell c-day"></div>
+        <div class="c-cell c-day"></div>
+        <div class="c-cell c-day"></div>
+        <div class="c-cell c-day"></div>
+      </div>
+    </div>
+    <script src="./index.js"></script>
+  </body>
+</html>
