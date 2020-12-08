@@ -1,30 +1,51 @@
+let tableWidth;
+
 let recordRed = () => {
-    let tableWidth = document.getElementById('calendar-table').offsetWidth;
-    const record = document.getElementById('01012020');
-    record.style.width = (((tableWidth - 2) / 7) * 2 ) + 'px';
-}
+  const record = document.getElementById("01012020");
+  record.style.width = ((tableWidth - 2) / 7) * 2 + "px";
+};
 
 let recordBlue = () => {
-    let tableWidth = document.getElementById('calendar-table').offsetWidth;
-    const record = document.getElementById('01022020');
-    record.style.width = (((tableWidth - 2) / 7) * 5 ) + 'px';
+  const record = document.getElementById("01022020");
+  record.style.width = ((tableWidth - 2) / 7) * 5 + "px";
+};
+
+let recordGreen = () => {
+  const record = document.getElementById("01032020");
+  record.style.width = ((tableWidth - 2) / 7) * 3 + "px";
+  record.style.top = "20px";
+};
+
+function renderEvents() {
+    tableWidth = document.getElementById("calendar-table").offsetWidth;
+    recordRed();
+    recordBlue();
+    recordGreen();
 }
 
-window.addEventListener('resize', () => {
-    
-    recordRed();
-    recordBlue();
+window.addEventListener("resize", () => {
+    renderEvents();
 });
 
-window.addEventListener('DOMContentLoaded', () => {
-    
-    recordRed();
-    recordBlue();
+window.addEventListener("DOMContentLoaded", () => {
+    renderEvents();
 });
 
+/**
+ * Get week Number
+ * @returns {number} - weekNumber
+ */
+Date.prototype.getWeekNumber = function () {
+    var d = new Date(
+      Date.UTC(this.getFullYear(), this.getMonth(), this.getDate())
+    );
+    var dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+  };
 
-
-const events = [
+const rawEvents = [
   { date: "2019-12-31", days: 2, title: "Prvý nadpis" },
   { date: "2020-01-01", days: 4, title: "Prvý nadpis" },
   { date: "2020-01-01", days: 2, title: "Prvý nadpis" },
@@ -34,27 +55,40 @@ const events = [
   { date: "2020-01-04", days: 3, title: "Prvý nadpis" },
   { date: "2020-01-04", days: 1, title: "Prvý nadpis" },
   { date: "2020-01-05", days: 1, title: "Prvý nadpis" },
-  { date: "2020-01-05", days: 1, title: "Prvý nadpis" },
+  { date: "2020-01-05", days: 3, title: "Prvý nadpis" },
   //New week
   { date: "2020-01-06", days: 1, title: "Prvý nadpis" },
   { date: "2020-01-07", days: 2, title: "Prvý nadpis" },
   { date: "2020-01-08", days: 2, title: "Prvý nadpis" },
-
+  { date: "2020-01-11", days: 3, title: "Prvý nadpis" },
 ];
 
-/**
- * Get week Number
- * @returns {number} - weekNumber
- */
-Date.prototype.getWeekNumber = function () {
-  var d = new Date(
-    Date.UTC(this.getFullYear(), this.getMonth(), this.getDate())
-  );
-  var dayNum = d.getUTCDay() || 7;
-  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-  var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-  return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
-};
+
+let events = [];
+let betweenWeekEvents = [];
+
+//Check events which continue troughout weeks and create new
+rawEvents.forEach(rawEvent => {
+    let dayInWeek = new Date(rawEvent.date).getDay() === 0 ? 7 : new Date(rawEvent.date).getDay();
+    let weekNumber = new Date(rawEvent.date).getWeekNumber();
+
+    //kazdy tyzden na zaciatok doplnit datumy
+    if((dayInWeek + rawEvent.days > 8)) {
+        let newDays = (dayInWeek + rawEvent.days) - 8;
+        let incrementDate = (8 - dayInWeek);        
+        let newDate = new Date(rawEvent.date);
+        newDate.setDate(newDate.getDate() + incrementDate);
+        newDate = newDate.toISOString().slice(0,10);
+        betweenWeekEvents.push({date: newDate, days: newDays, title: rawEvent.title}) 
+    }
+
+    events.push(rawEvent);
+});
+
+console.log(events);
+console.log(betweenWeekEvents);
+
+
 
 function createRenderMatrix() {
   let prevWeekNumber = false;
@@ -63,7 +97,8 @@ function createRenderMatrix() {
 
   events.forEach((event) => {
     let weekNumber = new Date(event.date).getWeekNumber();
-    let dayInWeek = (new Date(event.date).getDay() === 0) ? 7 : new Date(event.date).getDay();
+    let dayInWeek =
+      new Date(event.date).getDay() === 0 ? 7 : new Date(event.date).getDay();
     let eventLength = event.days;
 
     //Init first week in loop
@@ -134,6 +169,5 @@ function createRenderMatrix() {
 
   return output;
 }
-
 
 console.log(createRenderMatrix());

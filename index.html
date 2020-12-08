@@ -41,6 +41,13 @@
 
       .c-day-content {
         position: absolute;
+        z-index: 2;
+      }
+
+      .c-day-event {
+        white-space: nowrap;
+        overflow: hidden;
+        position: absolute;
       }
       
       .c-red {
@@ -49,6 +56,10 @@
 
       .c-blue {
         background-color: blue;
+      }
+
+      .c-green {
+        background-color: green;
       }
     </style>
     <title>Document</title>
@@ -67,7 +78,7 @@
       <div class="c-week">
         <div class="c-cell c-day">
           <div class="c-day-content">
-            <div id="01012020" class="c-day-event c-red">Event</div>
+            <div id="01012020" class="c-day-event c-red">Event a este nejaky dlhy text</div>
             <div id="dayid" class="c-day-event">Event</div>
           </div>
         </div>
@@ -85,6 +96,7 @@
         <div class="c-cell c-day">
           <div class="c-day-content">
             <div id="01022020" class="c-day-event c-blue">Event</div>
+            <div id="01032020" class="c-day-event c-green">Event s dlhším názvom</div>
             <div id="dayid" class="c-day-event">Event</div>
           </div>
         </div>
