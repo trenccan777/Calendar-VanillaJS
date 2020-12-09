@@ -17,18 +17,18 @@ let recordGreen = () => {
 };
 
 function renderEvents() {
-    tableWidth = document.getElementById("calendar-table").offsetWidth;
-    recordRed();
-    recordBlue();
-    recordGreen();
+  tableWidth = document.getElementById("calendar-table").offsetWidth;
+  recordRed();
+  recordBlue();
+  recordGreen();
 }
 
 window.addEventListener("resize", () => {
-    renderEvents();
+  renderEvents();
 });
 
 window.addEventListener("DOMContentLoaded", () => {
-    renderEvents();
+  renderEvents();
 });
 
 /**
@@ -36,15 +36,17 @@ window.addEventListener("DOMContentLoaded", () => {
  * @returns {number} - weekNumber
  */
 Date.prototype.getWeekNumber = function () {
-    var d = new Date(
-      Date.UTC(this.getFullYear(), this.getMonth(), this.getDate())
-    );
-    var dayNum = d.getUTCDay() || 7;
-    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-    var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
-  };
+  var d = new Date(
+    Date.UTC(this.getFullYear(), this.getMonth(), this.getDate())
+  );
+  var dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+};
 
+
+let events = [];
 const rawEvents = [
   { date: "2019-12-31", days: 2, title: "Prvý nadpis" },
   { date: "2020-01-01", days: 4, title: "Prvý nadpis" },
@@ -64,36 +66,60 @@ const rawEvents = [
 ];
 
 
-let events = [];
-let betweenWeekEvents = [];
-
-//Check events which continue troughout weeks and create new
-rawEvents.forEach(rawEvent => {
-    let dayInWeek = new Date(rawEvent.date).getDay() === 0 ? 7 : new Date(rawEvent.date).getDay();
+/**
+ * @returns {Array} - array of edited events
+ */
+function editRawEvents() {
+  let prevWeekNumber = false;
+  let betweenWeekEvents = [];
+  //Check events which continue troughout weeks and create new
+  rawEvents.forEach((rawEvent) => {
+    let dayInWeek =
+      new Date(rawEvent.date).getDay() === 0
+        ? 7
+        : new Date(rawEvent.date).getDay();
     let weekNumber = new Date(rawEvent.date).getWeekNumber();
 
-    //kazdy tyzden na zaciatok doplnit datumy
-    if((dayInWeek + rawEvent.days > 8)) {
-        let newDays = (dayInWeek + rawEvent.days) - 8;
-        let incrementDate = (8 - dayInWeek);        
-        let newDate = new Date(rawEvent.date);
-        newDate.setDate(newDate.getDate() + incrementDate);
-        newDate = newDate.toISOString().slice(0,10);
-        betweenWeekEvents.push({date: newDate, days: newDays, title: rawEvent.title}) 
+    //Init first week in loop
+    prevWeekNumber = prevWeekNumber ? prevWeekNumber : weekNumber;
+
+    //Each new week reset array of rows in week
+    if (prevWeekNumber < weekNumber) {
+      events = [...events, ...betweenWeekEvents];
+      betweenWeekEvents = [];
+      prevWeekNumber = weekNumber;
     }
 
+    //kazdy tyzden na zaciatok doplnit datumy
+    if (dayInWeek + rawEvent.days > 8) {
+      let newDays = dayInWeek + rawEvent.days - 8;
+      let incrementDate = 8 - dayInWeek;
+      let newDate = new Date(rawEvent.date);
+      newDate.setDate(newDate.getDate() + incrementDate);
+      newDate = newDate.toISOString().slice(0, 10);
+      console.log(newDate)
+      betweenWeekEvents.push({
+        date: newDate,
+        days: newDays,
+        title: rawEvent.title,
+      });
+    }
     events.push(rawEvent);
-});
+  });
 
-console.log(events);
-console.log(betweenWeekEvents);
+  events = [...events, ...betweenWeekEvents];
+  return events;
+}
 
 
-
-function createRenderMatrix() {
-  let prevWeekNumber = false;
+/**
+ * @param {Array} - edited events about new weeks
+ * @returns {Array} - array of events to render
+ */
+function createRenderMatrix(events) {
   let rowsInWeek = [];
   let output = [];
+  let prevWeekNumber = false;
 
   events.forEach((event) => {
     let weekNumber = new Date(event.date).getWeekNumber();
@@ -120,7 +146,7 @@ function createRenderMatrix() {
       return;
     }
 
-    //Row array
+    //Row array loop
     for (let i = 0; i < rowsInWeek.length; i++) {
       //x1 exists in array?
       if (rowsInWeek[i].day.includes(dayInWeek)) {
@@ -170,4 +196,4 @@ function createRenderMatrix() {
   return output;
 }
 
-console.log(createRenderMatrix());
+console.log(createRenderMatrix(editRawEvents()));
